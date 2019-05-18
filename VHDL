@@ -1,0 +1,31 @@
+Ο κώδικας VHDL που δημιουργήσαμε είναι ο παρακάτω:
+
+Συμπεριλαμβάνω τις βιβλιοθήκες που χρειάζομαι. χρειάζομαι την ieee.std_logic_1164.all και την ieee.std_logic_unsigned.all διότι θέλουμε οι πράξεις να γίνονται με μη προσημασμένους αριθμούς.
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.all;
+USE ieee.std_logic_unsigned.all;
+
+ENTITY Vhdl2 IS Δημιουργούμε μία Entity που την ονομάζω Vhdl2 με μία παράμετρο Ν μεγέθους 8
+GENERIC(N : INTEGER :=8);  Ο αριθμός των bits για τις εισόδους Α & Β πρέπει να είναι generic.
+PORT(A,B :IN std_logic_vector(N-1 downto 0); Οι είσοδοι είναι οι 8bit αριθμοί Α & Β τύπου std logic vector 
+s : IN std_logic_vector(2 downto 0); s o αριθμός της εισόδου από τον χρήστη 
+Cin :IN std_logic;  Cin το κρατούμενο που θα είναι 0 ή 1 και θα προστίθεται στο άθροισμα ή στην αφαίρεση των αριθμητικών πράξεων. 
+F: OUT std_logic_vector(N downto 0));  F η έξοδος που θα παίρνουμε 
+END Vhdl2;
+ARCHITECTURE geo  OF Vhdl2 IS Δημιουργούμε μια αρχιτεκτονική που την ονομάζω geo της Vhdl entity που δημιουργήσαμε νωρίτερα.
+signal sum, sub : std_logic_vector(N downto 0);
+BEGIN
+sum<=('0' & A) + ('0' & B) + ('0' &Cin); Το αποτέλεσμα sum της πρόσθεσης 
+sub<=('0' & A) - ('0' & B) + ('0' &Cin) ; Το αποτέλεσμα sub της αφαίρεσης 
+WITH s SELECT Ανάλογα με την είσοδο του χρήστη παίρνουμε και τα αντίστοιχα αποτελέσματα 
+F<= 	sum					WHEN "000" ,
+	sub						WHEN "001" , 
+	(('0' & A) + 1 )				WHEN "010" ,
+	('0' & A) - 1 					WHEN "011" ,
+	('0' & A) AND ('0' & B)			WHEN "100" ,
+	('0' & A) OR ('0' & B) 			WHEN "101" ,
+	('0' & A) XOR ('0' & B)			WHEN "110" ,
+	NOT ('0' & A)					WHEN OTHERS;
+	
+END geo; Τέλος προγράμματος
